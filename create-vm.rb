@@ -12,9 +12,6 @@ def main
   really = ARGV.delete("--doit") || ARGV.delete("--force") || ARGV.delete("-f")
   noop = !really
   recreate = ARGV.delete("--recreate")
-  if noop
-    puts "(pass --doit to actually create a vm)"
-  end
   if recreate && exists?
     r "orbctl", "delete", "-f", VM_NAME,
       noop: noop
@@ -45,11 +42,21 @@ def main
     noop: noop
 
   r "rm", "./configuration.nix", noop: noop
+
+  if noop
+    puts "*** pass --doit to actually create a vm"
+  end
 end
 
 def add_my_config(nixcfg, noop:)
+  if noop
+    puts "(noop) add spraints.nix to nixos configuration"
+    return
+  end
+
   orig = nixcfg + ".orig"
-  r "cp", nixcfg, orig, noop: false, continue: noop
+  r "cp", nixcfg, orig, noop: noop
+
   cfg = File.read(nixcfg).lines
   if cfg.none? { |l| l =~ /spraints.nix/ }
     i = cfg.index { |l| l =~ /orbstack/ }
@@ -57,9 +64,9 @@ def add_my_config(nixcfg, noop:)
     cfg.insert i+1, "      ./spraints.nix\n"
     File.write(nixcfg, cfg.join)
   end
-  r "diff", "-u", orig, nixcfg, noop: false, continue: noop
-ensure
-  r "rm", orig, noop: false, continue: true
+
+  r "diff", "-u", orig, nixcfg, noop: noop, continue: true
+  r "rm", orig, noop: noop
 end
 
 def exists?
