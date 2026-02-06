@@ -43,6 +43,10 @@ def main
 
   r "rm", "./configuration.nix", noop: noop
 
+  r "orbctl", "run", "-m", VM_NAME, "cp",
+    "./profile", "/mnt/linux/home/spraints/.profile",
+    noop: noop
+
   if noop
     puts "*** pass --doit to actually create a vm"
   end
