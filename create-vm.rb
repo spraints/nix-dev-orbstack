@@ -47,6 +47,16 @@ def main
     "./profile", "/mnt/linux/home/spraints/.profile",
     noop: noop
 
+  r "orbctl", "run", "-m", VM_NAME, "mkdir", "-p",
+    "/mnt/linux/home/spraints/.config/direnv/lib",
+    noop: noop
+
+  # This comes from https://raw.githubusercontent.com/nix-community/nix-direnv/refs/tags/3.1.0/direnvrc
+  r "orbctl", "run", "-m", VM_NAME, "cp",
+    "./nix-direnv.sh",
+    "/mnt/linux/home/spraints/.config/direnv/lib/nix-direnv.sh",
+    noop: noop
+
   if noop
     puts "*** pass --doit to actually create a vm"
   end
