@@ -72,12 +72,17 @@ def add_my_config(nixcfg, noop:)
   r "cp", nixcfg, orig, noop: noop
 
   cfg = File.read(nixcfg).lines
+
   if cfg.none? { |l| l =~ /spraints.nix/ }
     i = cfg.index { |l| l =~ /orbstack/ }
     raise "orbstack import not found in config!" if i.nil?
     cfg.insert i+1, "      ./spraints.nix\n"
-    File.write(nixcfg, cfg.join)
   end
+
+  i = cfg.index { |l| l =~ /extraGroups/ }
+  cfg[i] = %Q{    extraGroups = [ "wheel" "orbstack" "docker" ];\n}
+
+  File.write(nixcfg, cfg.join)
 
   r "diff", "-u", orig, nixcfg, noop: noop, continue: true
   r "rm", orig, noop: noop

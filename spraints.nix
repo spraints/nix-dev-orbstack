@@ -8,4 +8,5 @@
     direnv
     docker_29
   ];
+  virtualisation.docker.enable = true;
 }
