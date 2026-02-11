@@ -51,6 +51,17 @@ def main
     "/mnt/linux/home/spraints/.config/direnv/lib",
     noop: noop
 
+  clone_ok = r "orbctl", "run", "-m", VM_NAME, "git", "clone",
+    "git@github.com:spraints/dotfiles",
+    "/mnt/linux/home/spraints/.dotfiles",
+    noop: noop, continue: true
+
+  if clone_ok || noop
+    r "orbctl", "run", "-m", VM_NAME, "bash", "-xec",
+      "cd /mnt/linux/home/spraints/.dotfiles && script/install-nix-dev",
+      noop: noop
+  end
+
   # This comes from https://raw.githubusercontent.com/nix-community/nix-direnv/refs/tags/3.1.0/direnvrc
   r "orbctl", "run", "-m", VM_NAME, "cp",
     "./nix-direnv.sh",
