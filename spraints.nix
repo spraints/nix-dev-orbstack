@@ -1,12 +1,12 @@
 { config, lib, pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
-    neovim
     curl
-    openssh
-    git
     direnv
     docker_29
+    git
+    neovim
+    openssh
   ];
   virtualisation.docker.enable = true;
 }
